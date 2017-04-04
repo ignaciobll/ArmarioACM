@@ -1,0 +1,9 @@
+* Armario - ACM
+
+Toda la organización la estamos llevando desde Trello.
+
+** Base de Datos
+
+Usamos ~sqlite~ de momento.
+*** Modelo E/R
+[[./img/ER.png]]
