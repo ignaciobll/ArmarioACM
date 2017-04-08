@@ -6,4 +6,4 @@ Toda la organización la estamos llevando desde Trello.
 
 Usamos ~sqlite~ de momento.
 *** Modelo E/R
-[[./img/ER.png]]
+[[./ER/er.jpg]]
