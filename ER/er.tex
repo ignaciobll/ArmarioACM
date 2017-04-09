@@ -1,0 +1,58 @@
+\documentclass[a4paper,12pt,landscape]{article}
+
+\usepackage[landscape]{geometry}
+\usepackage{graphicx}
+
+\usepackage{tikz-er2}
+\begin{document}
+
+\thispagestyle{empty}
+
+\usetikzlibrary{positioning}
+\usetikzlibrary{shadows}
+
+\tikzstyle{every entity} = [top color=white, bottom color=blue!30, 
+                            draw=blue!50!black!100, drop shadow]
+\tikzstyle{every weak entity} = [drop shadow={shadow xshift=.7ex, 
+                                 shadow yshift=-.7ex}]
+\tikzstyle{every attribute} = [top color=white, bottom color=yellow!20, 
+                               draw=yellow, node distance=1cm, drop shadow]
+\tikzstyle{every relationship} = [top color=white, bottom color=red!20, 
+                                  draw=red!50!black!100, drop shadow]
+\tikzstyle{every isa} = [top color=white, bottom color=green!20, 
+                         draw=green!50!black!100, drop shadow]
+
+\centering
+\scalebox{.87}{
+\begin{tikzpicture}[node distance=1.5cm, every edge/.style={link}]
+
+  \node[entity] (c) {Compra};
+  \node[attribute] (c_i) [above=of c] {\key{ID}} edge (c);
+  \node[attribute] (c_d) [above left=of c] {descripcion} edge (c);
+  \node[attribute] (c_f) [left=of c] {fecha} edge (c);
+  \node[attribute] (c_c) [below left=of c] {coste} edge (c);
+  
+  \node[relationship] (co) [right=of c] {comprado} edge (c);
+  \node[attribute] (co_c) [below left=of co] {cantidad} edge (co);
+  \node[attribute] (co_p) [below=of co] {precio} edge (co);
+
+  \node[entity] (p) [right=of co] {Producto} edge (co);
+  \node[attribute] (p_i) [above left=of p] {\key{ID}} edge (p);
+  \node[attribute] (p_p) [above=of p] {precio} edge (p);
+  \node[attribute] (p_c) [above right=of p] {cantidad} edge (p);
+  \node[attribute] (p_d) [right=of p] {descripcion} edge (p);
+  \node[attribute] (p_a) [below right=of p] {actualizado} edge (p);
+  
+  \node[relationship] (ve) [below=of p] {vendido} edge (p);
+  \node[attribute] (ve_c) [right=of ve] {cantidad} edge (ve);
+
+  \node[entity] (v) [below=of ve] {Venta} edge (ve);
+  \node[attribute] (p_i) [left=of v] {\key{ID}} edge (v);
+  \node[attribute] (p_f) [right=of v] {fecha} edge (v);
+  
+  
+
+\end{tikzpicture}
+}
+
+\end{document}
