@@ -1,0 +1,42 @@
+* Armario API
+** Configuración previa
+   Para el acceso a la base de datos se utiliza ODBC, por tanto para
+   poder usar esta API se necesita configurar el DSN a la base de
+   datos, disponible en este tutorial:
+   https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-configuration.html
+
+** Compilación
+   
+   #+BEGIN_SRC shell
+$ rebar3 compile
+   #+END_SRC
+   
+** Ejecución
+   #+BEGIN_SRC shell
+$ rebar3 release
+...
+$ ./_build/default/rel/counter/bin/counter console
+   #+END_SRC
+   
+   /or/
+   
+   #+BEGIN_SRC shell
+$ rebar3 shell
+   #+END_SRC
+   
+** Operaciones:
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | HTTP Method | Route          | Content Tye Provided | Status Code | Response                                                                     |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /              | application/json     |         200 | {"info":[{"id":"1432", "name":"kit-kat", "price":0.40, "quantity":7}, ... ]} |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /price         | application/json     |         200 | {"info":[{"id":"1432", "name":"kit-kat", "price":0.40}, ... ]}               |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /quantity      | application/json     |         200 | {"info":[{"id":"1432", "name":"kit-kat", "quantity":7}, ... ]}               |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /{id}          | application/json     |         200 | {"id":"1432", "name":"kit-kat", "price":0.40, "quantity":7}                  |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /{id}/price    | application/json     |         200 | {"id":"1432", "name":"kit-kat", "price":0.40}                                |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
+   | GET         | /{id}/quantity | application/json     |         200 | {"id":"1432", "name":"kit-kat", "quantity":7}                                |
+   |-------------+----------------+----------------------+-------------+------------------------------------------------------------------------------|
