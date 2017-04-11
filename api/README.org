@@ -5,6 +5,48 @@
    datos, disponible en este tutorial:
    https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-configuration.html
 
+*** Linux
+
+Hace falta modificar el fichero ~odbc.ini~. Seguramente lo podáis
+encontrar en la carpeta ~/etc/~.
+
+(Arch Way): ~yaourt -S mariadb-connector-odbc~
+
+Y después añadir esto a ~/etc/odbcinst.ini~
+
+#+BEGIN_SRC bash
+
+[MariaDB]
+Description = ODBC Driver for MariaDB
+Driver      = /usr/lib/libmaodbc.so
+FileUsage   = 1
+
+#+END_SRC
+
+Y luego a ~/etc/odbc.ini~:
+
+#+BEGIN_SRC bash
+
+[MariaDBTest]
+Driver      = MariaDB
+Database    = test
+Socket      = /run/mysqld/mysqld.sock
+#Server      = 127.0.0.1
+#Port        = 3306
+
+
+#+END_SRC
+
+Si queréis hacer la prueba, abrid un shell de Erlang, ~erl~.
+
+#+BEGIN_SRC erlang
+
+odbc:start().
+ConnectionString = "DSN=MariaDBTest;UID=root;PWD=yoursecretpass".
+{ok, Conn} = odbc:connect(ConnectionString, []).
+
+#+END_SRC
+
 ** Compilación
    
    #+BEGIN_SRC shell
