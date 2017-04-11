@@ -5,7 +5,8 @@
          resource_exists/2,
          allowed_methods/2,
          content_types_provided/2,
-         to_json/2
+         to_json/2,
+         parse_query/1
         ]).
 
 -include_lib("webmachine/include/webmachine.hrl").
@@ -76,20 +77,20 @@ to_json(ReqData, State) ->
     Json =
         case maps:get(op, State) of
             info when Length == 0 ->
-                {struct, parse_query(db_client:get_all_info())};
+                {struct, parse_query(db_client:all_info())};
             info when Length == 1 ->
-                {struct, parse_query(db_client:get_product_info(maps:get(id, State)))};
+                {struct, parse_query(db_client:product_info(maps:get(id, State)))};
             price when Length == 1 ->
-                {struct, parse_query(db_client:get_prices())};
+                {struct, parse_query(db_client:prices())};
             price when Length == 2 ->
-                {struct, parse_query(db_client:get_price(maps:get(id, State)))};
+                {struct, parse_query(db_client:price(maps:get(id, State)))};
             quantity when Length == 1 ->
-                {struct, parse_query(db_client:get_quantity())};
+                {struct, parse_query(db_client:quantity())};
             quantity when Length == 2 ->
-                {struct, parse_query(db_client:get_quantity(maps:get(id, State)))}
+                {struct, parse_query(db_client:quantity(maps:get(id, State)))}
         end,
     io:format("JSON : ~p~n", [Json]),
-    {mochijson:encode(Json), ReqData, State}.
+    {mochijson2:encode(Json), ReqData, State}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 get_from_path(ReqData, Key) ->
@@ -98,6 +99,14 @@ get_from_path(ReqData, Key) ->
         _ -> error
     end.
 
-parse_query({error, _}) -> [{result, ""}];
+parse_query({error, _}) -> [{result, "nothing to show"}];
 parse_query({selected, Columns, Results}) ->
-    [{columns, {array, Columns}}].
+    Values =
+        lists:map(fun(X) ->
+                          lists:map(fun({Column, N}) -> {Column, element(N, X)} end,
+                                    lists:zip(Columns, lists:seq(1, length(Columns))))
+                  end, Results),
+    case length(Values) of
+        1 -> lists:flatten(Values);
+        _ -> [{info, {array, Values}}]
+    end.

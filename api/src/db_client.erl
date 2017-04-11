@@ -92,7 +92,7 @@ get_quantity(Id) ->
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 connect() ->
-    ConnectionString = "DSN=test3;UID=root;PWD=holacaracola",
+    ConnectionString = "DSN=your_dsn_here;UID=your_user;PWD=your_password",
     {ok, Conn} = odbc:connect(ConnectionString, []),
     Conn.
 

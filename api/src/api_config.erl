@@ -9,7 +9,7 @@
 dispatch() ->
     lists:flatten([
 		   {[id, op], api_resource, []},
-		   {[op], api_resource, []},
+		   {[op], api_resource, []},	% TODO with /{id} operation not supported yet...
 		   {[], api_resource, []}
                   ]).
 
