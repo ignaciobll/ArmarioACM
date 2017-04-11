@@ -10,7 +10,7 @@
 -export([init/1]).
 
 start_link() ->
-    db_client:start(),
+    odbc:start(),
     supervisor:start_link({local, ?MODULE}, ?MODULE, []).
 
 init([]) ->

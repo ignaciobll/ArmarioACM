@@ -30,7 +30,6 @@ allowed_methods(ReqData, State) ->
 %% function that checks if a function is malformed (if malformed ->
 %% true, else false)
 malformed_request(ReqData, State) ->
-    io:format("malformed_request:~p~n", [State]),
     Method = wrq:method(ReqData),
     Length = maps:get(length, State),
     case lists:keyfind(op, 1, wrq:path_info(ReqData)) of
@@ -53,7 +52,6 @@ malformed_request(ReqData, State) ->
 
 %% function that checks if the counter of a request exists
 resource_exists(ReqData, State) ->
-    io:format("resource_exists:~p~n", [State]),
     {lists:foldl(fun(X, Acc) ->
                          case maps:get(X, State) of
                              error ->
@@ -67,12 +65,10 @@ resource_exists(ReqData, State) ->
 %% function that gives the content types that the API provides (html,
 %% json...)
 content_types_provided(ReqData, State) ->
-    io:format("content_types_provided:~p~n", [State]),
     {[{"application/json", to_json} ], ReqData, State}.
 
 %% function that creates the json response
 to_json(ReqData, State) ->
-    io:format("to_json:~p~n", [State]),
     Length = maps:get(length, State),
     Json =
         case maps:get(op, State) of
