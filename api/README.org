@@ -60,7 +60,7 @@ $ rebar3 release
 $ ./_build/default/rel/counter/bin/counter console
    #+END_SRC
    
-   /or/
+   /o/
    
    #+BEGIN_SRC shell
 $ rebar3 shell

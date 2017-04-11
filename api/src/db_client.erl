@@ -53,26 +53,38 @@ quantity(Id) -> gen_server:call(?MODULE, {quantity, Id}).
 
 %%TODO
 exists(Id) -> true.
-    
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% gen_server auxiliar functions
-%% TODO
-get_all_info() -> ok.
+get_all_info() ->
+    Sql = "SELECT * FROM acm.PRODUCTO",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
-%% TODO
-get_prices() -> ok.
+get_prices() ->
+    Sql = "SELECT NOMBRE, PRECIO FROM acm.PRODUCTO",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
-%% TODO
-get_quantity() -> ok.
+get_quantity() ->
+    Sql = "SELECT NOMBRE, Unidades_por_producto FROM acm.PRODUCTO",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
-%% TODO
-get_product_info(Id) -> ok.
+get_product_info(Id) ->
+    Sql = "SELECT * FROM acm.PRODUCTO where ID = " ++ Id + ";",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
-%% TODO
-get_price(Id) -> ok.
+get_price(Id) ->
+    Sql = "SELECT NOMBRE, PRECIO FROM acm.PRODUCTO where ID = " ++ Id ++ ";",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
-%% TODO
-get_quantity(Id) -> ok.
+get_quantity(Id) ->
+    Sql = "SELECT NOMBRE, Unidades_por_producto FROM acm.PRODUCTO where ID = " ++ Id ++ ";",
+    Connection = connect(),
+    odbc:sql_query(Connection, Sql).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 connect() ->
