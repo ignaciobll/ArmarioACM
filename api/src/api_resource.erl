@@ -34,17 +34,18 @@ malformed_request(ReqData, State) ->
     Length = maps:get(length, State),
     case lists:keyfind(op, 1, wrq:path_info(ReqData)) of
         {op, "price"} when (Length == 1) and (Method == 'GET') ->
-	    {false, ReqData, State#{ op => price }};
+            {false, ReqData, State#{ op => price }};
         {op, "price"} when (Length == 2) and (Method == 'GET') ->
-            {false, ReqData, State#{op => price, id => get_from_path(ReqData, id) }};
+            {false, ReqData, State#{ op => price, id => get_from_path(ReqData, id) }};
         {op, "quantity"} when (Length == 1) and (Method == 'GET') ->
             {false, ReqData, State#{ op => quantity }};
         {op, "quantity"} when (Length == 2) and (Method == 'GET') ->
-            {false, ReqData, State#{op => quantity, id => get_from_path(ReqData, id) }};
+            {false, ReqData, State#{ op => quantity, id => get_from_path(ReqData, id) }};
         false when (Length == 0) and (Method == 'GET') ->
             {false, ReqData, State#{ op => info }};
-        false when (Length == 2) and (Method == 'GET') ->
-            {false, ReqData, State#{op => info, id => get_from_path(ReqData, id) }};
+        false when (Length == 1) and (Method == 'GET') ->
+            io:format("hola"),
+            {false, ReqData, State#{ op => info, id => get_from_path(ReqData, id) }};
         _ ->
             {true, ReqData, State}
     end.
@@ -57,7 +58,7 @@ resource_exists(ReqData, State) ->
                              error ->
                                  false and Acc;
                              Value when X == id ->
-                                 db_client:id_exists(Value) and Acc;
+                                 db_client:exists(Value) and Acc;
                              _ -> true and Acc
                          end
                  end, true, maps:keys(State)), ReqData, State}.
@@ -74,19 +75,20 @@ to_json(ReqData, State) ->
     Length = maps:get(length, State),
     Json =
         case maps:get(op, State) of
-            info when Length == 1 -> 
-		{struct, parse_query(db_client:get_all_info())};
-            info when Length == 2 ->
+            info when Length == 0 ->
+                {struct, parse_query(db_client:get_all_info())};
+            info when Length == 1 ->
                 {struct, parse_query(db_client:get_product_info(maps:get(id, State)))};
             price when Length == 1 ->
                 {struct, parse_query(db_client:get_prices())};
-            price when Length == 2 -> 
-		{struct, parse_query(db_client:get_price(maps:get(id, State)))};
-            quantity when Length == 1 -> 
-		{struct, parse_query(db_client:get_quantity())};
-            quantity when Length == 2 -> 
-		{struct, parse_query(db_client:get_quantity(maps:get(id, State)))}
+            price when Length == 2 ->
+                {struct, parse_query(db_client:get_price(maps:get(id, State)))};
+            quantity when Length == 1 ->
+                {struct, parse_query(db_client:get_quantity())};
+            quantity when Length == 2 ->
+                {struct, parse_query(db_client:get_quantity(maps:get(id, State)))}
         end,
+    io:format("JSON : ~p~n", [Json]),
     {mochijson:encode(Json), ReqData, State}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,6 +98,6 @@ get_from_path(ReqData, Key) ->
         _ -> error
     end.
 
-parse_query({error, Reason}) -> [{result, ""}];
-parse_query({selected, Columns, Results}) -> 
-    [{columns, Columns}, {results, Results}].
+parse_query({error, _}) -> [{result, ""}];
+parse_query({selected, Columns, Results}) ->
+    [{columns, {array, Columns}}].

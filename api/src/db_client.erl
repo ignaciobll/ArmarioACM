@@ -51,8 +51,12 @@ price(Id) -> gen_server:call(?MODULE, {price, Id}).
 
 quantity(Id) -> gen_server:call(?MODULE, {quantity, Id}).
 
-%%TODO
-exists(Id) -> true.
+exists(Id) -> 
+    {Value, _} = string:to_integer(Id),
+    Sql = "SELECT ID FROM acm.PRODUCTO",
+    Connection = connect(),
+    {selected, _, Ids} = odbc:sql_query(Connection, Sql),
+    lists:foldl(fun({X}, Acc) -> (X == Value) or Acc end, false, Ids).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% gen_server auxiliar functions
